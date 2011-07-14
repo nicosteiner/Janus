@@ -1,7 +1,7 @@
-﻿$J.moduleConfig = function() {
+﻿$J.moduleConfig.outlookExchange = function() {
 }
 
-$J.moduleConfig.prototype = {
+$J.moduleConfig.outlookExchange.prototype = {
 
   __loadCSS: false,
 
@@ -47,7 +47,7 @@ $J.moduleConfig.prototype = {
       
       markup: function() {
       
-        return  '<h3 id="tuneUpTitle.mail-exchange-postfach">Outlook Exchange</h3>' +
+        return  '<h3>Outlook Exchange</h3>' +
                 '<em>Outlook auch unterwegs von jedem internetfähigen PC oder Smartphone aus nutzen</em>' +
                 '<ul><li class="wide">Mobiler Zugriff auf alle Funktionen wie E-Mails, Kontakte, Termine und Aufgaben dank zentraler Speicherung auf Exchange-Server.</li>' +
                 '<li class="wide">Automatische Synchronisation für aktuellen Stand auf jedem Gerät </li>' +
@@ -86,17 +86,35 @@ $J.moduleConfig.prototype = {
       
       constructor: function(container) {
       
-        container.onclick = function(container) {
+        if ($J.cart) {
+        
+          $J.cart.setArticle('outlookExchange', 'Outlook Exchange', 0);
+        
+        }
+      
+        container.addEventListener('click', function(container) {
         
           return function() {
         
-            alert("order!");
+            if ($J.cart) {
+            
+              $J.cart.addArticle('outlookExchange');
+              
+              $J.app.renderModule('cart');
+              
+            }
             
             return false;
             
           }
         
-        }(container);
+        }(container), false);
+        
+      },
+      
+      destructor: function(container) {
+      
+        container.removeEventListener('click');
         
       },
       

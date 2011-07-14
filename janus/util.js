@@ -87,7 +87,6 @@ $J.util = {
   
   getAllModuleIncludes: function() {
   
-  
     var allElements = document.getElementsByTagName("*");
     
 		var results = [];
@@ -107,6 +106,30 @@ $J.util = {
 		}
 
 		return results;
+    
+  },
+  
+  // finds the first element with data-inc-id = moduleId
+  
+  getModuleById: function(moduleId) {
+  
+    var allElements = document.getElementsByTagName("*");
+    
+		var result;
+
+		var element;
+    
+		for (var i = 0; (element = allElements[i]) != null; i++) {
+    
+			var elementIdAttribute = element.getAttribute('data-inc-id');
+      
+			if (elementIdAttribute && elementIdAttribute === moduleId) {
+      
+				return element;
+        
+      }
+        
+		}
     
   }
   

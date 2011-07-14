@@ -5,7 +5,7 @@ $J.pageConfig.prototype = {
 
   __loadCSS: true,
 
-  __loadScript: false,
+  __loadScript: true,
 
   root: function() {
   
@@ -47,34 +47,6 @@ $J.pageConfig.prototype = {
   
       phase: 0,
   
-      constructor: function(container) {
-      
-        container.onmouseover = function(container) {
-        
-          return function() {
-        
-            container.style.backgroundColor = '#ffff99';
-            
-          }
-        
-        }(container);
-      
-        container.onmouseout = function(container) {
-        
-          return function() {
-        
-            container.style.backgroundColor = '';
-            
-          }
-        
-        }(container);
-      
-      },
-
-      destructor: function(container) {
-      
-      },
-
       markup: function() {
     
         return  '<h1>Test-Applikation</h1>' +
@@ -94,7 +66,9 @@ $J.pageConfig.prototype = {
   
       markup: function() {
     
-        return  '<div class="tuneup" data-inc-type="module" data-inc-id="outlookExchange"></div>';
+        return  '<div class="tuneup cart" data-inc-type="module" data-inc-id="cart"></div>' +
+                '<div class="tuneup" data-inc-type="module" data-inc-id="outlookExchange"></div>' +
+                '<div class="tuneup" data-inc-type="module" data-inc-id="promotion"></div>';
         
       }
       

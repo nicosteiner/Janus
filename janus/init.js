@@ -6,6 +6,12 @@ if (!window.$J) {
   
 }
 
+if (!$J.moduleConfig) {
+
+  $J.moduleConfig = {};
+
+}
+
 $J.init = function() {
 
   this.init();
@@ -14,17 +20,17 @@ $J.init = function() {
 
 $J.init.prototype = {
 
-  initPrivateParams: function() {
+  __initPrivateParams: function() {
 
     this.__page = $J.util.getPageName();
     
     this.__sessionId = $J.util.getSessionId();
     
-    this.__sessionData = $J.util.getSession(this.__sessionId);
+    this.__sessionData = $J.util.getSession(this.__sessionId).data;
     
   },
 
-  loadPageConfig: function() {
+  __loadPageConfig: function() {
   
     if (this.__page) {
     
@@ -40,7 +46,7 @@ $J.init.prototype = {
       
           if ($J.pageConfig) {
           
-            that.pageConfigLoaded();
+            that.__pageConfigLoaded();
           
           }
           
@@ -52,67 +58,83 @@ $J.init.prototype = {
   
   },
   
-  pageConfigLoaded: function() {
+  __pageConfigLoaded: function() {
   
     this.__pageConfig = new $J.pageConfig();
   
     if (this.__pageConfig.head) {
   
-      this.renderPageHead();
+      this.__renderPageHead();
       
     }
   
     if (this.__pageConfig.body) {
   
-      this.renderPageBody();
+      this.__renderPageBody();
       
     }
   
     if (this.__pageConfig.__loadCSS) {
   
-      this.loadPageCSS();
+      this.__loadPageCSS();
       
     }
   
     if (this.__pageConfig.__loadScript) {
       
-      this.loadPageScript();
+      this.__loadPageScript();
       
     }
   
-    this.renderPageIncludes();
+    this.__renderPageIncludes();
     
-    this.renderPageModules();
+    this.__renderPageModules();
     
   },
   
-  loadModuleConfig: function(moduleElement) {
+  renderModule: function(moduleId) {
+  
+    var moduleConfig = $J.moduleConfig[moduleId];
+    
+    if (!moduleConfig) {
+    
+      this.__loadModuleConfig(moduleId);
+    
+    } else {
+    
+      this.__renderModule(moduleId, new moduleConfig);
+    
+    }
+  
+  },
+  
+  __loadModuleConfig: function(moduleId) {
   
     var scriptElement = document.createElement('script');
   
     var scriptElementReference = document.body.appendChild(scriptElement);
     
-    scriptElementReference.src = 'janus/modules/config/' + moduleElement.getAttribute('data-inc-id') + '.js';
+    scriptElementReference.src = 'janus/modules/config/' + moduleId + '.js';
     
-    scriptElementReference.onload = function(that, moduleElement) {
+    scriptElementReference.onload = function(that, moduleId) {
     
       return function() {
     
-        // this must be refactored
+        var moduleConfig = $J.moduleConfig[moduleId];
     
-        if ($J.moduleConfig) {
+        if (typeof moduleConfig === 'function') {
         
-          that.moduleConfigLoaded(new $J.moduleConfig, moduleElement);
+          that.__moduleConfigLoaded(moduleId, new moduleConfig);
         
         }
         
       }
     
-    }(this, moduleElement);
+    }(this, moduleId);
     
   },
   
-  moduleConfigLoaded: function(moduleConfig, moduleElement) {
+  __moduleConfigLoaded: function(moduleId, moduleConfig) {
   
     if (moduleConfig.__loadCSS) {
   
@@ -121,18 +143,26 @@ $J.init.prototype = {
     if (moduleConfig.__loadScript) {
       
     }
+    
+    this.__renderModule(moduleId, moduleConfig);
+  
+  },
+  
+  __renderModule: function(moduleId, moduleConfig) {
+  
+    var moduleElement = $J.util.getModuleById(moduleId);
   
     if (moduleConfig.root) {
   
-      this.renderDocPart(moduleConfig, moduleElement, 'root', -1);
+      this.__renderDocPart(moduleConfig, moduleElement, 'root', -1);
       
     }
   
-    this.renderModuleParts(moduleConfig, moduleElement);
+    this.__renderModuleParts(moduleConfig, moduleElement);
     
   },
   
-  renderModuleParts: function(moduleConfig, moduleElement) {
+  __renderModuleParts: function(moduleConfig, moduleElement) {
   
     // there are 6 render phases
   
@@ -146,7 +176,7 @@ $J.init.prototype = {
       
         if (modulePart) {
 
-          this.renderDocPart(moduleConfig, modulePart, modulePart.getAttribute('data-inc-id'), phase);
+          this.__renderDocPart(moduleConfig, modulePart, modulePart.getAttribute('data-inc-id'), phase);
           
         }
         
@@ -156,23 +186,23 @@ $J.init.prototype = {
   
   },
   
-  renderPageHead: function() {
+  __renderPageHead: function() {
   
     var containerElement = document.head;
 
-    this.renderDocPart(this.__pageConfig, containerElement, 'head', -1);
+    this.__renderDocPart(this.__pageConfig, containerElement, 'head', -1);
   
   },
   
-  renderPageBody: function() {
+  __renderPageBody: function() {
   
     var containerElement = document.body;
 
-    this.renderDocPart(this.__pageConfig, containerElement, 'body', -1);
+    this.__renderDocPart(this.__pageConfig, containerElement, 'body', -1);
   
   },
   
-  loadPageCSS: function() {
+  __loadPageCSS: function() {
   
     if (this.__page) {
     
@@ -188,7 +218,7 @@ $J.init.prototype = {
   
   },
   
-  loadPageScript: function() {
+  __loadPageScript: function() {
   
     if (this.__page) {
     
@@ -202,7 +232,7 @@ $J.init.prototype = {
   
   },
   
-  renderPageIncludes: function() {
+  __renderPageIncludes: function() {
   
     // there are 6 render phases
 
@@ -216,7 +246,7 @@ $J.init.prototype = {
       
         if (pageInclude) {
       
-          this.renderDocPart(this.__pageConfig, pageInclude, pageInclude.getAttribute('data-inc-id'), phase);
+          this.__renderDocPart(this.__pageConfig, pageInclude, pageInclude.getAttribute('data-inc-id'), phase);
             
         }
         
@@ -226,7 +256,7 @@ $J.init.prototype = {
   
   },
     
-  renderPageModules: function() {
+  __renderPageModules: function() {
   
     var allModuleIncludes = $J.util.getAllIncludes(document.body, 'module');
   
@@ -236,7 +266,7 @@ $J.init.prototype = {
     
       if (moduleInclude) {
     
-        this.loadModuleConfig(moduleInclude, moduleInclude.getAttribute('data-inc-id'));
+        this.__loadModuleConfig(moduleInclude.getAttribute('data-inc-id'));
   
       }
       
@@ -244,11 +274,7 @@ $J.init.prototype = {
   
   },
   
-  renderPageModule: function(pageModule, part) {
-  
-  },
-    
-  renderDocPart: function(config, containerElement, part, phase) {
+  __renderDocPart: function(config, containerElement, part, phase) {
 
     if (typeof config[part] === 'function') {
     
@@ -296,9 +322,9 @@ $J.init.prototype = {
   
   init: function() {
 
-    this.initPrivateParams();
+    this.__initPrivateParams();
     
-    this.loadPageConfig();
+    this.__loadPageConfig();
   
   }
 
@@ -306,4 +332,4 @@ $J.init.prototype = {
 
 // here we go!
 
-new $J.init();
+$J.app = new $J.init();

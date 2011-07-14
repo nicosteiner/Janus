@@ -24,6 +24,7 @@ body {
 }
 
 .tuneup {
+  float: left;
   border-radius: 4px;
   border: 1px #555 solid;
   width: 250px;
@@ -107,4 +108,14 @@ body {
 
 .tuneup .footer a:hover {
   box-shadow: 0 0 2px #aaa;
+}
+
+.cart {
+  width: 150px;
+  float: right;
+}
+
+.cart .footer a {
+  padding: 5px 28px;
+  float: none;
 }
