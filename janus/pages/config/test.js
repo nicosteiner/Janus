@@ -1,4 +1,4 @@
-$J.pageConfig = function() {
+﻿$J.pageConfig = function() {
 }
 
 $J.pageConfig.prototype = {
@@ -7,17 +7,51 @@ $J.pageConfig.prototype = {
 
   __loadScript: false,
 
+  root: function() {
+  
+  },
+  
+  head: function() {
+  
+    return {
+    
+      markup: function() {
+    
+        return '<title>Janus - Seite Test - Create something new</title>';
+      
+      }
+    
+    };
+  
+  },
+  
+  body: function() {
+  
+    return {
+    
+      markup: function() {
+    
+        return  '<div data-inc-type="page" data-inc-id="header"></div>' +
+                '<div data-inc-type="page" data-inc-id="content"></div>' +
+                '<div data-inc-type="page" data-inc-id="footer"></div>';
+      
+      }
+    
+    };
+  
+  },
+  
   header: function() {
 
     return {
   
       phase: 0,
   
-      markup: [
-      
-        '<h1>Das ist eine zweite Seite</h1>'
+      markup: function() {
+    
+        return '<h1>Das ist eine zweite Seite</h1>';
         
-      ]
+      }
       
     }
     
@@ -29,13 +63,13 @@ $J.pageConfig.prototype = {
   
       phase: 0,
   
-      markup: [
-      
-        '<p><a href="index.html">Hier geht es wieder zur�ck</a></p>'
+      markup: function() {
+    
+        return '<p><a href="index.html">Hier geht es wieder zurück</a></p>';
         
-      ]
+      }
       
-    }
+    };
     
   }
   

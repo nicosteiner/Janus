@@ -58,6 +58,56 @@ $J.util = {
     
     return $J.__session[sessionId];
     
+  },
+  
+  getAllIncludes: function(element, type) {
+  
+  
+    var allElements = element.getElementsByTagName("*");
+    
+		var results = [];
+
+		var element;
+    
+		for (var i = 0; (element = allElements[i]) != null; i++) {
+    
+			var elementDataAttribute = element.getAttribute('data-inc-type');
+      
+			if (elementDataAttribute && elementDataAttribute === type) {
+      
+				results.push(element);
+        
+      }
+        
+		}
+
+		return results;
+    
+  },
+  
+  getAllModuleIncludes: function() {
+  
+  
+    var allElements = document.getElementsByTagName("*");
+    
+		var results = [];
+
+		var element;
+    
+		for (var i = 0; (element = allElements[i]) != null; i++) {
+    
+			var elementDataAttribute = element.getAttribute('data-inc-type');
+      
+			if (elementDataAttribute && elementDataAttribute === 'module') {
+      
+				results.push(element);
+        
+      }
+        
+		}
+
+		return results;
+    
   }
   
 };

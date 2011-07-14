@@ -1,12 +1,46 @@
-$J.pageConfig = function() {
+﻿$J.pageConfig = function() {
 }
 
 $J.pageConfig.prototype = {
 
-  __loadCSS: false,
+  __loadCSS: true,
 
   __loadScript: false,
 
+  root: function() {
+  
+  },
+  
+  head: function() {
+  
+    return {
+    
+      markup: function() {
+    
+        return '<title>Janus - Create something new</title>';
+      
+      }
+    
+    }
+  
+  },
+  
+  body: function() {
+  
+    return {
+    
+      markup: function() {
+    
+        return  '<div id="header" data-inc-type="page" data-inc-id="header"></div>' +
+                '<div id="content" data-inc-type="page" data-inc-id="content"></div>' +
+                '<div id="footer" data-inc-type="page" data-inc-id="footer"></div>';
+      
+      }
+    
+    }
+  
+  },
+  
   header: function() {
 
     return {
@@ -41,11 +75,12 @@ $J.pageConfig.prototype = {
       
       },
 
-      markup: [
-      
-        '<h1>Headline Test</h1>'
+      markup: function() {
+    
+        return  '<h1>Test-Applikation</h1>' +
+                '<p><a href="test.html">Link zu einer zweiten Seite</a></p>';
         
-      ]
+      }
       
     }
     
@@ -57,12 +92,11 @@ $J.pageConfig.prototype = {
   
       phase: 0,
   
-      markup: [
-      
-        '<span>Hello world!</span>' +
-        '<p><a href="test.html">Link zu einer zweiten Seite</a></p>'
+      markup: function() {
+    
+        return  '<div class="tuneup" data-inc-type="module" data-inc-id="outlookExchange"></div>';
         
-      ]
+      }
       
     }
     
