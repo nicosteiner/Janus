@@ -87,13 +87,13 @@ $J.moduleConfig.cart.prototype = {
       
             allRemoveButtons[i].addEventListener('click', function(articleId) {
             
-              return function() {
+              return function(e) {
             
                 $J.cart.removeArticle(articleId);
               
                 $J.app.renderModule('cart');
                 
-                return false;
+                e.preventDefault();
                 
               }
             
@@ -151,11 +151,11 @@ $J.moduleConfig.cart.prototype = {
       
         container.addEventListener('click', function(container) {
         
-          return function() {
+          return function(e) {
         
             alert("checkout!");
             
-            return false;
+            e.preventDefault();
             
           }
         

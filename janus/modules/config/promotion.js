@@ -94,7 +94,7 @@ $J.moduleConfig.promotion.prototype = {
       
         container.addEventListener('click', function(container) {
         
-          return function() {
+          return function(e) {
         
             if ($J.cart) {
             
@@ -104,7 +104,7 @@ $J.moduleConfig.promotion.prototype = {
               
             }
             
-            return false;
+            e.preventDefault();
             
           }
         

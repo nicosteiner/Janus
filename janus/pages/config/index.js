@@ -17,7 +17,8 @@ $J.pageConfig.prototype = {
     
       markup: function() {
     
-        return '<title>Janus - Create something new</title>';
+        return  '<meta charset="utf-8">' +
+                '<title>Janus - Create something new</title>';
       
       }
     

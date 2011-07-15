@@ -49,7 +49,7 @@ $J.moduleConfig.outlookExchange.prototype = {
       
         return  '<h3>Outlook Exchange</h3>' +
                 '<em>Outlook auch unterwegs von jedem internetfähigen PC oder Smartphone aus nutzen</em>' +
-                '<ul><li class="wide">Mobiler Zugriff auf alle Funktionen wie E-Mails, Kontakte, Termine und Aufgaben dank zentraler Speicherung auf Exchange-Server.</li>' +
+                '<ul><li class="wide">Mobiler Zugriff auf alle Funktionen wie E-Mails, Kontakte, Termine und Aufgaben dank zentraler Speicherung auf Server.</li>' +
                 '<li class="wide">Automatische Synchronisation für aktuellen Stand auf jedem Gerät </li>' +
                 '<li class="mid">2 GB Speicherplatz und Microsoft Outlook 2007 als Download inklusive.</li></ul>';
       
@@ -94,7 +94,7 @@ $J.moduleConfig.outlookExchange.prototype = {
       
         container.addEventListener('click', function(container) {
         
-          return function() {
+          return function(e) {
         
             if ($J.cart) {
             
@@ -104,7 +104,7 @@ $J.moduleConfig.outlookExchange.prototype = {
               
             }
             
-            return false;
+            e.preventDefault();
             
           }
         

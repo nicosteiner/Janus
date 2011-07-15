@@ -1,4 +1,4 @@
-﻿$J.cartImpl = function() {
+$J.cartImpl = function() {
   
   this.init();
 

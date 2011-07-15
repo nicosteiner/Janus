@@ -30,12 +30,13 @@ body {
   width: 250px;
   margin: 10px 10px 10px 0;
   box-shadow: 0 0 5px #aaa;
+  padding: 3px;
 }
 
 .tuneup .header h2 {
   border-radius: 4px 4px 0 0;
   padding: 5px;
-  border-bottom: 1px #555 solid;
+  border: 1px #555 solid;
   background-image: -moz-linear-gradient(#ddf, #aaf);
   color: #005;
   font-size: 12px;
@@ -43,6 +44,8 @@ body {
 
 .tuneup .content {
   padding: 5px;
+  border-left: 1px #555 solid;
+  border-right: 1px #555 solid;
   background-image: -moz-linear-gradient(#fff, #eef);
   color: #005;
   font-size: 12px;
@@ -68,7 +71,7 @@ body {
 
 .tuneup .footer {
   border-radius: 0 0 4px 4px;
-  border-top: 1px #555 solid;
+  border: 1px #555 solid;
   padding: 5px;
   background-image: -moz-linear-gradient(#efe, #dfd);
   color: #005;

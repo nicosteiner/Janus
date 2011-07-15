@@ -36,9 +36,11 @@ $J.init.prototype = {
     
       var scriptElement = document.createElement('script');
     
-      var scriptElementReference = document.body.appendChild(scriptElement);
+      scriptElement.src = 'janus/pages/config/' + this.__page + '.js';
+
+      scriptElement.async = true;
       
-      scriptElementReference.src = 'janus/pages/config/' + this.__page + '.js';
+      var scriptElementReference = document.head.appendChild(scriptElement);
       
       scriptElementReference.onload = function(that) {
       
@@ -84,11 +86,13 @@ $J.init.prototype = {
       
       this.__loadPageScript();
       
-    }
+    } else {
   
-    this.__renderPageIncludes();
-    
-    this.__renderPageModules();
+      this.__renderPageIncludes();
+      
+      this.__renderPageModules();
+      
+    }
     
   },
   
@@ -112,9 +116,11 @@ $J.init.prototype = {
   
     var scriptElement = document.createElement('script');
   
-    var scriptElementReference = document.body.appendChild(scriptElement);
+    scriptElement.src = 'janus/modules/config/' + moduleId + '.js';
     
-    scriptElementReference.src = 'janus/modules/config/' + moduleId + '.js';
+    scriptElement.async = true;
+      
+    var scriptElementReference = document.head.appendChild(scriptElement);
     
     scriptElementReference.onload = function(that, moduleId) {
     
@@ -224,10 +230,26 @@ $J.init.prototype = {
     
       var scriptElement = document.createElement('script');
     
+      scriptElement.src = 'janus/pages/script/' + this.__page + '.js';
+
+      scriptElement.async = true;
+
       var scriptElementReference = document.head.appendChild(scriptElement);
       
-      scriptElementReference.src = 'janus/pages/script/' + this.__page + '.js';
-
+      // when page script is ready, continue rendering
+      
+      scriptElementReference.onload = function(that) {
+      
+        return function() {
+      
+          that.__renderPageIncludes();
+          
+          that.__renderPageModules();
+          
+        }
+      
+      }(this);
+      
     }
   
   },
