@@ -9,3 +9,5 @@ if (typeof $J === 'undefined') {
 $J.initParams = {};
 
 $J.initParams.url = window.location.href;
+
+$J.initParams.initialRendering = false;

@@ -176,6 +176,8 @@ $J.util = {
       // we are on the server side
       
       require('../' + file);
+      
+      callbackFunction(scope, param);
     
     }
     

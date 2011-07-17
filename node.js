@@ -54,9 +54,9 @@ http.createServer(function (request, response) {
 
       var __rootConfig = __pageConfig.root();
     
-      var markup = __rootConfig.markup();
+      $J.app.html = __rootConfig.markup();
       
-      response.end(markup);
+      response.end($J.app.html);
       
     }
   

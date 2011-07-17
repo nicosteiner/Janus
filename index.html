@@ -1,9 +1,82 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>this will be a tricky part</title>
   </head>
   <body>
-    <script src="janus/util.js"></script>
-    <script src="janus/init.js"></script>
+    <script type="text/javascript">
+    
+      var id = 'bla';
+    
+      var html = '<html><head></head><body><div id="bla"><holla /><div></div><span class="df"></span></div></body></html>';
+    
+      var myregexp = new RegExp('id="' + id + '"');
+  
+  var result = html.search(myregexp);
+  
+  if (result !== -1) {
+  
+    var elementBegin = html.substring(0, result).lastIndexOf('>') + 1;
+    
+    var elementAndFollowingHtml = html.substring(elementBegin);
+    
+    var nextSpaceChar = elementAndFollowingHtml.indexOf(' ');
+    
+    var nextGtChar = elementAndFollowingHtml.indexOf('>');
+    
+    if (nextSpaceChar !== -1 && nextSpaceChar < nextGtChar) {
+    
+      var tagEnd = nextSpaceChar;
+      
+    } else {
+    
+      var tagEnd = nextGtChar;
+    
+    }
+    
+    function getElement(startPosition, elementAndFollowingHtml, tagName) {
+    
+      // search for same next opening element
+      
+      var nextSameOpeningTag = new RegExp('<' + tagName);
+      
+      var nextSameOpeningTagPosition = elementAndFollowingHtml.substring(startPosition + 1).search(nextSameOpeningTag);
+      
+      // search for same next opening element
+      
+      var nextSameClosingTag = new RegExp('</' + tagName);
+      
+      var nextSameClosingTagPosition = elementAndFollowingHtml.substring(startPosition + 1).search(nextSameClosingTag);
+      console.log('opening: ' + nextSameOpeningTagPosition);
+      console.log('closing: ' + nextSameClosingTagPosition);
+      if (nextSameOpeningTagPosition || nextSameClosingTagPosition) {
+
+        if (nextSameOpeningTagPosition === -1 || (nextSameClosingTagPosition !== -1 && nextSameClosingTagPosition < nextSameOpeningTagPosition)) {
+        
+          return elementAndFollowingHtml.substring(0, nextSameClosingTagPosition + tagName.length + 4);
+          
+        } else {
+        
+          getElement(nextSameOpeningTagPosition + 1, elementAndFollowingHtml, tagName);
+        
+        }
+        
+      } else {
+      
+        return false;
+      
+      }
+      
+    }
+  
+    var tagName = elementAndFollowingHtml.substring(1, tagEnd);
+    
+    var result = getElement(0, elementAndFollowingHtml, tagName);
+    
+    console.log(result);
+  
+  }
+    
+    </script>
   </body>
 </html>

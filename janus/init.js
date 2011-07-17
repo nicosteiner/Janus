@@ -28,6 +28,8 @@ $J.init.prototype = {
     
     this.__sessionData = $J.util.getSession(this.__sessionId).data;
     
+    this.html = '';
+    
   },
 
   __loadPageConfig: function() {
@@ -46,33 +48,37 @@ $J.init.prototype = {
   
     scope.__pageConfig = new $J.pageConfig();
   
-    if (scope.__pageConfig.head) {
+    if ($J.initParams.initialRendering) {
   
-      scope.__renderPageHead();
-      
-    }
-  
-    if (scope.__pageConfig.body) {
-  
-      scope.__renderPageBody();
-      
-    }
-  
-    if (scope.__pageConfig.__loadCSS) {
-  
-      scope.__loadPageCSS();
-      
-    }
-  
-    if (scope.__pageConfig.__loadScript) {
-      
-      scope.__loadPageScript();
-      
-    } else {
-  
-      scope.__renderPageIncludes();
-      
-      scope.__renderPageModules();
+      if (scope.__pageConfig.head) {
+    
+        scope.__renderPageHead();
+        
+      }
+    
+      if (scope.__pageConfig.body) {
+    
+        scope.__renderPageBody();
+        
+      }
+    
+      if (scope.__pageConfig.__loadCSS) {
+    
+        scope.__loadPageCSS();
+        
+      }
+    
+      if (scope.__pageConfig.__loadScript) {
+        
+        scope.__loadPageScript();
+        
+      } else {
+    
+        scope.__renderPageIncludes();
+        
+        scope.__renderPageModules();
+        
+      }
       
     }
     
@@ -255,37 +261,49 @@ $J.init.prototype = {
       // http://stackoverflow.com/questions/912596/how-to-turn-a-string-into-a-javascript-function-call
     
       var docPartConfig = config[part]();
-        
-      if (containerElement && (phase === -1 || docPartConfig.phase === phase)) {
-
-        // if there is content from previous rendering,
-        // try to call destructor
       
-        if (containerElement.innerHTML !== '') {
+      if (typeof document !== 'undefined') {
+      
+        // we are on the client side
+      
+        if (containerElement && (phase === -1 || docPartConfig.phase === phase)) {
+
+          // if there is content from previous rendering,
+          // try to call destructor
         
-          if (typeof docPartConfig.destructor === 'function') {
+          if (containerElement.innerHTML !== '') {
           
-            docPartConfig.destructor(containerElement);
+            if (typeof docPartConfig.destructor === 'function') {
+            
+              docPartConfig.destructor(containerElement);
+              
+            }
+            
+          }
+      
+          // replace container element with new markup
+      
+          containerElement.innerHTML = docPartConfig.markup();
+          
+          // if there is a constructor, call it
+          // check is a hack, because first check is always true and typeof always equals "function"
+          
+          if (docPartConfig.constructor && docPartConfig.constructor.name === '') {
+          
+            docPartConfig.constructor(containerElement);
             
           }
           
-        }
-    
-        // replace container element with new markup
-    
-        containerElement.innerHTML = docPartConfig.markup();
-        
-        // if there is a constructor, call it
-        // check is a hack, because first check is always true and typeof always equals "function"
-        
-        if (docPartConfig.constructor && docPartConfig.constructor.name === '') {
-        
-          docPartConfig.constructor(containerElement);
-          
-        }
-        
-        return true;
+          return true;
 
+        }
+      
+      } else {
+
+        // we are on the server side
+        
+        
+      
       }
       
     }
