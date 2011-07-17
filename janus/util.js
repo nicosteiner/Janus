@@ -16,7 +16,7 @@ $J.util = {
     
     var page = pageWithParams.indexOf('.') ? pageWithParams.substring(1, pageWithParams.indexOf('.')) : '';
     
-    if (page === '') {
+    if (page === '' || page === '/') {
     
       page = 'index';
     
