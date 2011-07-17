@@ -9,6 +9,24 @@ $J.pageConfig.prototype = {
 
   root: function() {
   
+    return {
+    
+      markup: function() {
+    
+        return  '<!DOCTYPE html>' +
+                '<html>' +
+                '<head></head>' +
+                '<body>' +
+                '<script src="janus/init-params-client.js"></script>' +
+                '<script src="janus/util.js"></script>' +
+                '<script src="janus/init.js"></script>' +
+                '</body>' +
+                '</html>';
+  
+      }
+    
+    }
+  
   },
   
   head: function() {

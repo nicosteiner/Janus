@@ -3,24 +3,15 @@ var fs = require('fs');
 
 http.createServer(function (request, response) {
   
-  var markup =  '<!DOCTYPE html>' +
-                '<html>' +
-                '<head></head>' +
-                '<body>' +
-                '<script src="janus/util.js"></script>' +
-                '<script src="janus/init.js"></script>' +
-                '</body>' +
-                '</html>';
+  var __req = request.url;
+
+  var __requestSplit = __req.split('.');
   
-  var req = request.url.substring(1);
+  var __ressourceType = __requestSplit[__requestSplit.length - 1];
   
-  var requestSplit = req.split('.');
+  if (__ressourceType === 'js') {
   
-  var ressourceType = requestSplit[requestSplit.length - 1];
-  
-  if (ressourceType === 'js') {
-  
-    fs.readFile(req, function(error, content) {
+    fs.readFile('.' + __req, function(error, content) {
       
       if (!error) {
       
@@ -32,9 +23,9 @@ http.createServer(function (request, response) {
       
     });
     
-  } else if  (ressourceType === 'css') {
+  } else if  (__ressourceType === 'css') {
 
-    fs.readFile(req, function(error, content) {
+    fs.readFile('.' + __req, function(error, content) {
       
       if (!error) {
       
@@ -48,13 +39,30 @@ http.createServer(function (request, response) {
     
   } else {
   
+    require('./janus/init-params-server.js');
+
+    $J.initParams.url = __req;
+  
+    require('./janus/util.js');
+    require('./janus/init.js');
+
     response.writeHead(200, {'Content-Type': 'text/html'});
     
-    response.end(markup);
+    __pageConfig = new $J.pageConfig();
+  
+    if (__pageConfig.root) {
+
+      var __rootConfig = __pageConfig.root();
+    
+      var markup = __rootConfig.markup();
+      
+      response.end(markup);
+      
+    }
   
   }
   
   
-}).listen(8124);
+}).listen(8084);
 
-console.log('Server running at http://127.0.0.1:8124/');
+console.log('Server running at http://127.0.0.1:8084/');

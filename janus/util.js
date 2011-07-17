@@ -1,4 +1,4 @@
-if (!window.$J) {
+if (typeof $J === 'undefined') {
 
   $J = {};
   
@@ -8,11 +8,9 @@ if (!window.$J) {
 
 $J.util = {
 
-  getPageName: function() {
+  getPageName: function(rawURI) {
   
-    var loc = window.location.href;
-    
-    var pageWithParams = loc.substring(loc.lastIndexOf('/'), loc.length);
+    var pageWithParams = rawURI.substring(rawURI.lastIndexOf('/'), rawURI.length);
     
     var page = pageWithParams.indexOf('.') ? pageWithParams.substring(1, pageWithParams.indexOf('.')) : '';
     
@@ -130,6 +128,56 @@ $J.util = {
       }
         
 		}
+    
+  },
+  
+  loadStylesheet: function(file) {
+
+    var stylesheetElement = document.createElement('link');
+  
+    var stylesheetElementReference = document.head.appendChild(stylesheetElement);
+    
+    stylesheetElementReference.rel = 'stylesheet';
+    
+    stylesheetElementReference.href = file;
+
+  },
+  
+  loadScript: function(file, callbackFunction, scope, param) {
+
+    if (typeof document !== 'undefined') {
+    
+      // we are on the client side
+  
+      var scriptElement = document.createElement('script');
+      
+      scriptElement.src = file;
+
+      scriptElement.async = true;
+      
+      var scriptElementReference = document.head.appendChild(scriptElement);
+      
+      scriptElementReference.onload = function(scope, callbackFunction, param) {
+      
+        return function() {
+      
+          if ($J.pageConfig) {
+          
+            callbackFunction(scope, param);
+          
+          }
+          
+        }
+      
+      }(scope, callbackFunction, param);
+      
+    } else {
+    
+      // we are on the server side
+      
+      require('../' + file);
+    
+    }
     
   }
   

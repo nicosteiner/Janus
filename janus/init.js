@@ -1,6 +1,6 @@
 // init global Janus object
 
-if (!window.$J) {
+if (typeof $J === 'undefined') {
 
   $J = {};
   
@@ -22,7 +22,7 @@ $J.init.prototype = {
 
   __initPrivateParams: function() {
 
-    this.__page = $J.util.getPageName();
+    this.__page = $J.util.getPageName($J.initParams.url);
     
     this.__sessionId = $J.util.getSessionId();
     
@@ -34,63 +34,45 @@ $J.init.prototype = {
   
     if (this.__page) {
     
-      var scriptElement = document.createElement('script');
-    
-      scriptElement.src = 'janus/pages/config/' + this.__page + '.js';
+      $J.util.loadScript('janus/pages/config/' + this.__page + '.js', this.__pageConfigLoaded, this);
 
-      scriptElement.async = true;
-      
-      var scriptElementReference = document.head.appendChild(scriptElement);
-      
-      scriptElementReference.onload = function(that) {
-      
-        return function() {
-      
-          if ($J.pageConfig) {
-          
-            that.__pageConfigLoaded();
-          
-          }
-          
-        }
-      
-      }(this);
-      
     }
-  
+      
   },
   
-  __pageConfigLoaded: function() {
+  __pageConfigLoaded: function(scope, param) {
   
-    this.__pageConfig = new $J.pageConfig();
+    // no param
   
-    if (this.__pageConfig.head) {
+    scope.__pageConfig = new $J.pageConfig();
   
-      this.__renderPageHead();
+    if (scope.__pageConfig.head) {
+  
+      scope.__renderPageHead();
       
     }
   
-    if (this.__pageConfig.body) {
+    if (scope.__pageConfig.body) {
   
-      this.__renderPageBody();
+      scope.__renderPageBody();
       
     }
   
-    if (this.__pageConfig.__loadCSS) {
+    if (scope.__pageConfig.__loadCSS) {
   
-      this.__loadPageCSS();
+      scope.__loadPageCSS();
       
     }
   
-    if (this.__pageConfig.__loadScript) {
+    if (scope.__pageConfig.__loadScript) {
       
-      this.__loadPageScript();
+      scope.__loadPageScript();
       
     } else {
   
-      this.__renderPageIncludes();
+      scope.__renderPageIncludes();
       
-      this.__renderPageModules();
+      scope.__renderPageModules();
       
     }
     
@@ -114,43 +96,29 @@ $J.init.prototype = {
   
   __loadModuleConfig: function(moduleId) {
   
-    var scriptElement = document.createElement('script');
-  
-    scriptElement.src = 'janus/modules/config/' + moduleId + '.js';
-    
-    scriptElement.async = true;
-      
-    var scriptElementReference = document.head.appendChild(scriptElement);
-    
-    scriptElementReference.onload = function(that, moduleId) {
-    
-      return function() {
-    
-        var moduleConfig = $J.moduleConfig[moduleId];
-    
-        if (typeof moduleConfig === 'function') {
-        
-          that.__moduleConfigLoaded(moduleId, new moduleConfig);
-        
-        }
-        
-      }
-    
-    }(this, moduleId);
-    
+    $J.util.loadScript('janus/modules/config/' + moduleId + '.js', this.__moduleConfigLoaded, this, moduleId);
+
   },
   
-  __moduleConfigLoaded: function(moduleId, moduleConfig) {
+  __moduleConfigLoaded: function(scope, param) {
   
-    if (moduleConfig.__loadCSS) {
+    // param = moduleId
   
-    }
-  
-    if (moduleConfig.__loadScript) {
+    var moduleConfig = $J.moduleConfig[param];
+
+    if (typeof moduleConfig === 'function') {
+        
+      if (moduleConfig.__loadCSS) {
+    
+      }
+    
+      if (moduleConfig.__loadScript) {
+        
+      }
+      
+      scope.__renderModule(param, new moduleConfig);
       
     }
-    
-    this.__renderModule(moduleId, moduleConfig);
   
   },
   
@@ -211,15 +179,9 @@ $J.init.prototype = {
   __loadPageCSS: function() {
   
     if (this.__page) {
-    
-      var stylesheetElement = document.createElement('link');
-    
-      var stylesheetElementReference = document.head.appendChild(stylesheetElement);
-      
-      stylesheetElementReference.rel = 'stylesheet';
-      
-      stylesheetElementReference.href = 'janus/pages/style/' + this.__page + '.css';
 
+      $J.util.loadStylesheet('janus/pages/style/' + this.__page + '.css');
+    
     }
   
   },
@@ -228,30 +190,20 @@ $J.init.prototype = {
   
     if (this.__page) {
     
-      var scriptElement = document.createElement('script');
-    
-      scriptElement.src = 'janus/pages/script/' + this.__page + '.js';
+      $J.util.loadScript('janus/pages/script/' + this.__page + '.js', this.__pageScriptLoaded, this);
 
-      scriptElement.async = true;
-
-      var scriptElementReference = document.head.appendChild(scriptElement);
-      
-      // when page script is ready, continue rendering
-      
-      scriptElementReference.onload = function(that) {
-      
-        return function() {
-      
-          that.__renderPageIncludes();
-          
-          that.__renderPageModules();
-          
-        }
-      
-      }(this);
-      
     }
+      
+  },
   
+  __pageScriptLoaded: function(scope, param) {
+
+    // no param
+  
+    scope.__renderPageIncludes();
+    
+    scope.__renderPageModules();
+    
   },
   
   __renderPageIncludes: function() {
